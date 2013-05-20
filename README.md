@@ -10,6 +10,9 @@ mod\_unavailable\_post sends a post request with information about a user that h
 Installing:
 ==========
 
+* Make sure you have erlang installed on the machine you are building from
+  * You probably want this to be the same machine you intend to install/run ejabberd on. I'm not sure about the interoperability of ejabberd/erlang versions.
+* Open the Emakefile and change ```/usr/local/Cellar/ejabberd/2.1.10/lib/ejabberd/include``` to the correct path on your machine
 * Run the build.sh script to build *.beam files
 * Copy the *.beam files from the ebin directory to the location where the other modules are for your server
 * Add the configuration shown below to your ejabberd.cfg file, providing the correct values for auth\_token, and post\_url
