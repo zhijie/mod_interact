@@ -1,12 +1,12 @@
 %%%----------------------------------------------------------------------
 
-%%% File    : mod_offline_prowl.erl
-%%% Author  : Robert George <rgeorge@midnightweb.net>
-%%% Purpose : Forward offline messages to prowl
-%%% Created : 31 Jul 2010 by Robert George <rgeorge@midnightweb.net>
+%%% File    : mod_offline_post.erl
+%%% Author  : Adam Duke <adam.v.duke@gmail.com>
+%%% Purpose : Forward offline messages to an arbitrary url
+%%% Created : 12 Feb 2012 by Adam Duke <adam.v.duke@gmail.com>
 %%%
 %%%
-%%% Copyright (C) 2010   Robert George
+%%% Copyright (C) 2012   Adam Duke
 %%%
 %%% This program is free software; you can redistribute it and/or
 %%% modify it under the terms of the GNU General Public License as

@@ -3,7 +3,7 @@
 %%% File    : mod_unavailable_post.erl
 %%% Author  : Adam Duke <adam.v.duke@gmail.com>
 %%% Purpose : Forward offline presence notifications to a url
-%%% Created : 12 Feb 2012 by Adam Duke <adam.duke@apprenaissance.com>
+%%% Created : 12 Feb 2012 by Adam Duke <adam.v.duke@gmail.com>
 %%%
 %%%
 %%% Copyright (C) 2012   Adam Duke
