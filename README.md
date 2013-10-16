@@ -7,6 +7,12 @@ mod\_offline\_post forwards messages that are sent to offline users through a po
 mod\_available\_post sends a post request with information about a user that has become available
 mod\_unavailable\_post sends a post request with information about a user that has gone offline
 
+Note:
+==========
+
+Between ejabberd 2.1.13 and 13.10 there were significant changes and modules compiled for one version don't directly work with the other version.
+There is an ejabberd_2.1.13 branch for versions of these modules that work with ejabberd 2.1.13
+
 Installing:
 ==========
 
