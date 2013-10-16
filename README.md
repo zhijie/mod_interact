@@ -20,37 +20,51 @@ Installing:
 Example Configuration:
 =====================
 
-     {mod_offline_post, [
-        {auth_token, "your-secret-token-here"},
-        {post_url, "http://localhost:3000/your/custom/url"}
-     ]}
-     {mod_available_post, [
-        {auth_token, "your-secret-token-here"},
-        {post_url, "http://localhost:3000/your/custom/url"}
-     ]}
-     {mod_unavailable_post, [
-        {auth_token, "your-secret-token-here"},
-        {post_url, "http://localhost:3000/your/custom/url"}
-     ]}
+		% configuration for ejabberd upto version 13.10
+		{mod_offline_post, [
+			{auth_token, "offline_post_auth_token"},
+			{post_url, "http://localhost:4567/offline_post"}
+		]}
+		{mod_available_post, [
+			{auth_token, "mod_available_post"},
+			{post_url, "http://localhost:4567/available_post"}
+		]}
+		{mod_unavailable_post, [
+			{auth_token, "unavailable_post_auth_token"},
+			{post_url, "http://localhost:4567/unavailable_post"}
+		]}
+
+    # configuration for ejabberd >= 13.10
+		mod_offline_post:
+			auth_token: "offline_post_auth_token"
+			post_url: "http://localhost:4567/offline_post"
+
+		mod_available_post:
+			auth_token: "available_post_auth_token"
+			post_url: "http://localhost:4567/available_post"
+
+		mod_unavailable_post:
+			auth_token: "unavailable_post_auth_token"
+			post_url: "http://localhost:4567/unavailable_post"
 
 Results:
 ========
 
 The application running at the post_url will receive a post http request with the following form parameters.
 
-    mod_offline_post
-    "to"=>"adam2@localhost"
-    "from"=>"adam1"
-    "body"=>"Does it still work?"
-    "access_token"=>"your-secret-token-here"
+		mod_offline_post
+		"to"=>"adam2@localhost"
+		"from"=>"adam1"
+		"body"=>"Does it still work?"
+		"access_token"=>"offline_post_auth_token"
 
-    mod_available_post
-    "jabber_id"=>"adam2"
-    "access_token"=>"your-secret-token-here"
+		mod_available_post
+		"jabber_id"=>"adam2"
+		"access_token"=>"mod_available_post"
 
-    mod_unavailable_post
-    "jabber_id"=>"adam2"
-    "access_token"=>"your-secret-token-here"
+		mod_unavailable_post
+		"jabber_id"=>"adam2"
+		"access_token"=>"unavailable_post_auth_token"
 
 License
 ========

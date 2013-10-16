@@ -39,6 +39,7 @@
 
 -include("ejabberd.hrl").
 -include("jlib.hrl").
+-include("logger.hrl").
 
 start(Host, Opts) ->
     ?INFO_MSG("Starting mod_unavailable_post", [] ),
@@ -59,18 +60,17 @@ stop(Host) ->
     ok.
 
 send_unavailable_notice(User, Server, _Resource, _Status) ->
-    Token = gen_mod:get_module_opt(Server, ?MODULE, auth_token, [] ),
-    PostUrl = gen_mod:get_module_opt(Server, ?MODULE, post_url, [] ),
-    if
-	(Token /= "") ->
-	  Sep = "&",
-	  Post = [
-	    "jabber_id=", User, Sep,
-	    "access_token=", Token ],
-	  ?INFO_MSG("Sending post request ~p~n",[Post] ),
-	  httpc:request(post, {PostUrl, [], "application/x-www-form-urlencoded", list_to_binary(Post)},[],[]),
-	  ok;
-	true ->
-	  ok
+    Token = gen_mod:get_module_opt(Server, ?MODULE, auth_token, fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
+    PostUrl = gen_mod:get_module_opt(Server, ?MODULE, post_url, fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
+    if (Token /= "") ->
+	      Sep = "&",
+	      Post = [
+	        "jabber_id=", User, Sep,
+	        "access_token=", Token ],
+	      ?INFO_MSG("Sending post request ~p~n",[Post] ),
+	      httpc:request(post, {binary_to_list(PostUrl), [], "application/x-www-form-urlencoded", list_to_binary(Post)},[],[]),
+	      ok;
+	    true ->
+	      ok
     end.
 
