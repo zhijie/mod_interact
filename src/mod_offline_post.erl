@@ -65,7 +65,9 @@ send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} 
     ?INFO_MSG("Sending post request to ~s with Token \"~s\"", [PostUrl, Token]),
 	?INFO_MSG("Type----------: Type:~s ", [Type]),
 	?INFO_MSG("Body is_list----------: ~s ", [(is_list(Body))]),
-	?INFO_MSG("Body----------: ~s ", [Body]),
+	last = lists:last(Body),
+	?INFO_MSG("Body----------: ~s ", last),
+	?INFO_MSG("Body----------: ~s ", last#text.data),
     if (Type == chat) and (Body /= <<"">>) ->
 		Sep = "&",
 	    data = Body#text.data,
