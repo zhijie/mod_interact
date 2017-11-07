@@ -69,7 +69,7 @@ send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} 
 	Lastone = lists:last(Body),
 	BodyContent = Lastone#text.data,
 	io:format("BodyContent ~p~n",[BodyContent]),
-	BodyContentStr = binary_to_list(BodyContent)],
+	BodyContentStr = binary_to_list(BodyContent),
 	io:format("BodyContentStr : ~p~n",[BodyContentStr]),
     if (Type == chat) and (Body /= <<"">>) ->
 		Sep = "&",
