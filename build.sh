@@ -1,2 +1,2 @@
-erl -pa /mnt/ejabberd/ejabberd1707/deps/lager/ebin/  -pz ebin -make
+erl -d pa /mnt/ejabberd/ejabberd1707/deps/lager/ebin/  -pz ebin -make
 
