@@ -67,10 +67,11 @@ send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} 
 	?INFO_MSG("Body is_list----------: ~s ", [(is_list(Body))]),
 	io:format("Body ~p~n",[lists:last(Body)]),
 	lastone = lists:last(Body),
-	io:format("Body ~p~n",[lastone#text.data]),
+	record_info(fields, lastone)-> [Field],
+	io:format("Body Field ~p~n",[Field]),
     if (Type == chat) and (Body /= <<"">>) ->
 		Sep = "&",
-	    data = Body#text.data,
+	    data = lastone#text.data,
         Post = [
           "to=", To#jid.luser, Sep,
           "from=", From#jid.luser, Sep,
