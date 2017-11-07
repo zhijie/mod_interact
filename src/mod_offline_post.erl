@@ -64,6 +64,7 @@ send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} 
     PostUrl = gen_mod:get_module_opt(To#jid.lserver, ?MODULE, post_url, fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
     ?INFO_MSG("Sending post request to ~s with Token \"~s\"", [PostUrl, Token]),
 	?INFO_MSG("Type----------: Type:~s ", [Type]),
+	?INFO_MSG("Body is_list----------: ~s ", [(is_list(Body))]),
     if (Type == chat) and (Body /= <<"">>) ->
 		Sep = "&",
 	    data = lists:nth(0,Body),
