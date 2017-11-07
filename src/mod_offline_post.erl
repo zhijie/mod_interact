@@ -70,11 +70,11 @@ send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} 
 	io:format("Body ~p~n",[Lastone#text.data]),
     if (Type == chat) and (Body /= <<"">>) ->
 		Sep = "&",
-	    data = Lastone#text.data,
+	    BodyContent = Lastone#text.data,
         Post = [
           "to=", To#jid.luser, Sep,
           "from=", From#jid.luser, Sep,
-          "body=", url_encode(data), Sep,
+          "body=", url_encode(BodyContent), Sep,
           "access_token=", Token],
         ?INFO_MSG("Sending post request to ~s with body \"~s\"", [PostUrl, Post]),
         httpc:request(post, {binary_to_list(PostUrl), [], "application/x-www-form-urlencoded", list_to_binary(Post)},[],[]),
