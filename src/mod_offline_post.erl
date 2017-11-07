@@ -69,7 +69,7 @@ send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} 
         Post = [
           "to=", To#jid.luser, Sep,
           "from=", From#jid.luser, Sep,
-          "body=", url_encode(lists:nth(0,Body).data), Sep,
+          "body=", url_encode(lists:nth(0,Body)), Sep,
           "access_token=", Token],
         ?INFO_MSG("Sending post request to ~s with body \"~s\"", [PostUrl, Post]),
         httpc:request(post, {binary_to_list(PostUrl), [], "application/x-www-form-urlencoded", list_to_binary(Post)},[],[]),
