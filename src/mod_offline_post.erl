@@ -38,7 +38,7 @@
 -define(PROCNAME, ?MODULE).
 
 -include("ejabberd.hrl").
--include("jlib.hrl").
+-include("xmpp.hrl").
 -include("logger.hrl").
 
 start(Host, Opts) ->
@@ -59,9 +59,7 @@ stop(Host) ->
     ok.
 
 -spec send_notice({any(), message()}) -> {any(), message()}.
-send_notice({_Action, #message{from = From, to = To} = Packet} = Acc) ->
-    Type = xml:get_tag_attr_s(list_to_binary("type"), Packet),
-    Body = xml:get_path_s(Packet, [{elem, list_to_binary("body")}, cdata]),
+send_notice({_Action, #message{type = Type, body = Body}} = Acc) ->
     Token = gen_mod:get_module_opt(To#jid.lserver, ?MODULE, auth_token, fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
     PostUrl = gen_mod:get_module_opt(To#jid.lserver, ?MODULE, post_url, fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
 
