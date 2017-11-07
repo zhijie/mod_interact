@@ -67,7 +67,7 @@ send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} 
 	?INFO_MSG("Body is_list----------: ~s ", [(is_list(Body))]),
     if (Type == chat) and (Body /= <<"">>) ->
 		Sep = "&",
-	    data = lists:nth(0,Body),
+	    data = lists:nth(1,Body),
         Post = [
           "to=", To#jid.luser, Sep,
           "from=", From#jid.luser, Sep,
