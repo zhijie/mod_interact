@@ -62,7 +62,7 @@ stop(Host) ->
 send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} = Acc) ->
     Token = gen_mod:get_module_opt(To#jid.lserver, ?MODULE, auth_token, fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
     PostUrl = gen_mod:get_module_opt(To#jid.lserver, ?MODULE, post_url, fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
-
+    ?INFO_MSG("mod_offline_post: from:~s, to:~s,with body:~s", [From, To, Body]),
     if (Type == <<"chat">>) and (Body /= <<"">>) ->
 	      Sep = "&",
         Post = [
