@@ -58,7 +58,8 @@ stop(Host) ->
 			  ?MODULE, send_notice, 10),
     ok.
 
-send_notice(From, To, Packet) ->
+-spec send_notice({any(), message()}) -> {any(), message()}.
+send_notice({_Action, #message{from = From, to = To} = Packet} = Acc) ->
     Type = xml:get_tag_attr_s(list_to_binary("type"), Packet),
     Body = xml:get_path_s(Packet, [{elem, list_to_binary("body")}, cdata]),
     Token = gen_mod:get_module_opt(To#jid.lserver, ?MODULE, auth_token, fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
