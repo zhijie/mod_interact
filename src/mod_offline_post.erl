@@ -67,10 +67,13 @@ send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} 
 	?INFO_MSG("Body is_list----------: ~s ", [(is_list(Body))]),
 	io:format("Body ~p~n",[lists:last(Body)]),
 	Lastone = lists:last(Body),
-	io:format("Body ~p~n",[Lastone#text.data]),
+	BodyContent = Lastone#text.data,
+	io:format("BodyContent ~p~n",[BodyContent]),
+	io:format("BodyContent string: ~p~n",[binary_to_list(BodyContent)]),
     if (Type == chat) and (Body /= <<"">>) ->
 		Sep = "&",
-	    BodyContent = Lastone#text.data,
+	    
+	    
         Post = [
           "to=", To#jid.luser, Sep,
           "from=", From#jid.luser, Sep,
