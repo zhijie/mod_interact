@@ -81,7 +81,7 @@ send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} 
     if (Type == chat) and (Body /= <<"">>) ->
 		Sep = "&",
         Post = [
-          "{ \"cid\": \"8103a4c628a0b98974ec1949-711261d4-5f17-4d2f-a855-5e5a8909b26e\", \"platform\": \"all\", \"audience\": \"all\", \"notification\": {\"android\": {\"alert\": \"Hi, JPush!\",\"title\": \"Send to Android\",\"builder_id\": 1,\"extras\": { \"newsid\": 321}},\"ios\": {\"alert\": \"Hi, JPush!\",\"sound\": \"default\",\"badge\": \"+1\",\"extras\": { \"newsid\": 321}} },  \"options\": {\"time_to_live\": 60,\"apns_production\": false,\"apns_collapse_id\":\"jiguang_test_201706011100\" }}"],
+          "{ \"cid\": \"8103a4c62890b98974ec1949-711161d4-5f17-4d2f-a855-5e5a8909b26e\", \"platform\": \"all\", \"audience\": \"all\", \"notification\": {\"android\": {\"alert\": \"Hi, JPush!\",\"title\": \"Send to Android\",\"builder_id\": 1},\"ios\": {\"alert\": \"Hi, JPush!\",\"sound\": \"default\",\"badge\": \"+1\", \"options\": {\"time_to_live\": 60,\"apns_production\": false,\"apns_collapse_id\":\"jiguang_test_201711011100\" }}"],
         ?INFO_MSG("Sending post:~s", [ Post]),
         httpc:request(post, {binary_to_list(JpushUrl), [], "application/json", list_to_binary(Post)},[{proxy_auth,{binary_to_list(AppKey),binary_to_list(MasterSecret) }}],[]),
         Acc;
