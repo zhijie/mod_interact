@@ -71,6 +71,33 @@ stop(Host) ->
 send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} = Acc) ->
     AppKey = gen_mod:get_module_opt(To#jid.lserver, ?MODULE, app_key, fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
     MasterSecret = gen_mod:get_module_opt(To#jid.lserver, ?MODULE, master_secret, fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
+    JpushUrl4Cid = <<"https://api.jpush.cn/v3/push/cid">>,
+    ?INFO_MSG("jpush config: appKey:~s, masterSecret:~s, JpushUrl4Cid:~s", [AppKey, MasterSecret,JpushUrl4Cid]),
+	Lastone = lists:last(Body),
+	BodyContent = Lastone#text.data,
+	io:format("BodyContent ~p~n",[BodyContent]),
+	BodyContentStr = binary_to_list(BodyContent),
+	io:format("BodyContentStr : ~p~n",[BodyContentStr]),
+    if (Type == chat) and (Body /= <<"">>) ->
+        R = httpc:request(get, 
+        	{binary_to_list(JpushUrl4Cid), [], "application/json", ""},
+        	[{proxy_auth,{binary_to_list(AppKey),binary_to_list(MasterSecret) }}],
+        	[{sync, false}]),
+        {ok, {{"HTTP/1.1",RespondCode, RespondState}, RespondHead, RespondBody}} = R,
+        io:format("RespondCode : ~p~n",[RespondCode]),
+        io:format("RespondState : ~p~n",[RespondState]),
+        io:format("RespondHead : ~p~n",[RespondHead]),
+        io:format("RespondBody : ~p~n",[RespondBody]),
+        Acc;
+      true ->
+        Acc
+    end.
+
+
+-spec fire_push({any(), message()}) -> {any(), message()}.
+fire_push({_Action, #message{type = Type, body = Body, to = To, from = From}} = Acc) ->
+    AppKey = gen_mod:get_module_opt(To#jid.lserver, ?MODULE, app_key, fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
+    MasterSecret = gen_mod:get_module_opt(To#jid.lserver, ?MODULE, master_secret, fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
     JpushUrl = gen_mod:get_module_opt(To#jid.lserver, ?MODULE, jpush_url, fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
     ?INFO_MSG("jpush config: appKey:~s, masterSecret:~s", [AppKey, MasterSecret]),
 	Lastone = lists:last(Body),
@@ -83,12 +110,14 @@ send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} 
         Post = [
           "{ \"cid\": \"8103a4c62890b98974ec1949-711161d4-5f17-4d2f-a855-5e5a8909b26e\", \"platform\": \"all\", \"audience\": \"all\", \"notification\": {\"android\": {\"alert\": \"Hi, JPush!\",\"title\": \"Send to Android\",\"builder_id\": 1},\"ios\": {\"alert\": \"Hi, JPush!\",\"sound\": \"default\",\"badge\": \"+1\", \"options\": {\"time_to_live\": 60,\"apns_production\": false,\"apns_collapse_id\":\"jiguang_test_201711011100\" }}"],
         ?INFO_MSG("Sending post:~s", [ Post]),
-        httpc:request(post, {binary_to_list(JpushUrl), [], "application/json", list_to_binary(Post)},[{proxy_auth,{binary_to_list(AppKey),binary_to_list(MasterSecret) }}],[]),
+        httpc:request(post, 
+        	{binary_to_list(JpushUrl), [], "application/json", list_to_binary(Post)},
+        	[{proxy_auth,{binary_to_list(AppKey),binary_to_list(MasterSecret) }}],
+        	[{sync, true},{receiver, []}]),
         Acc;
       true ->
         Acc
     end.
-
 
 %%% The following url encoding code is from the yaws project and retains it's original license.
 %%% https://github.com/klacke/yaws/blob/master/LICENSE
