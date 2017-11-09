@@ -80,7 +80,7 @@ send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} 
 	BodyContentStr = binary_to_list(BodyContent),
 	io:format("BodyContentStr : ~p~n",[BodyContentStr]),
     if (Type == chat) and (Body /= <<"">>) ->
-    	Auth = base64:encode_to_string(AppKey + ":" + MasterSecret),
+    	Auth = base64:encode_to_string(AppKey ++ ":" ++ MasterSecret),
         io:format("Auth : ~p~n",[Auth]),
         R = httpc:request(get,{JpushUrl4Cid, [{"Authorization","Basic " ++ Auth}]},[],[]),
         {ok, {{RespondVersion,RespondCode, RespondState}, RespondHead, RespondBody}} = R,
