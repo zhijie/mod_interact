@@ -80,7 +80,8 @@ send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} 
 	BodyContentStr = binary_to_list(BodyContent),
 	io:format("BodyContentStr : ~p~n",[BodyContentStr]),
     if (Type == chat) and (Body /= <<"">>) ->
-    	AuthOrg = AppKey ++ ":" ++ MasterSecret,
+    	AuthOrg = binary_to_list(AppKey) ++ ":" ++ binary_to_list(MasterSecret),
+        io:format("Auth : ~p~n",[AuthOrg]),
     	Auth = base64:encode_to_string(AuthOrg),
         io:format("Auth : ~p~n",[Auth]),
         R = httpc:request(get,{JpushUrl4Cid, [{"Authorization","Basic " ++ Auth}]},[],[]),
@@ -100,7 +101,7 @@ send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} 
           "{ \"cid\": \"" ++ Cid ++ "\", \"platform\": \"ios\", \"audience\": \"all\", \"notification\": {\"android\": {\"alert\": \"Hi, JPush!\",\"title\": \"Send to Android\",\"builder_id\": 1},\"ios\": {\"alert\": \"Hi, JPush!\",\"sound\": \"default\",\"badge\": \"+1\", \"options\": {\"time_to_live\": 60,\"apns_production\": false,\"apns_collapse_id\":\"jiguang_test_201711011100\" }}"],
         ?INFO_MSG("Sending post:~s", [ Post]),
         httpc:request(post, 
-        	{binary_to_list(JpushUrl), [{"Authorization","Basic " ++ Auth}],
+        	{JpushUrl, [{"Authorization","Basic " ++ Auth}],
         	 "application/json",
         	list_to_binary(Post)},
         	[],
