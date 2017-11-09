@@ -50,6 +50,7 @@
 -include("xmpp.hrl").
 -include("logger.hrl").
 
+
 start(Host, Opts) ->
     ?INFO_MSG("Starting mod_jpush", [] ),
     register(?PROCNAME,spawn(?MODULE, init, [Host, Opts])),  
@@ -79,7 +80,9 @@ send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} 
 	BodyContentStr = binary_to_list(BodyContent),
 	io:format("BodyContentStr : ~p~n",[BodyContentStr]),
     if (Type == chat) and (Body /= <<"">>) ->
-        R = httpc:request(get,{JpushUrl4Cid, [{"Authorization","Basic YTY4YWQwYWI3MjMzNTAwOGU2OTEyNDA3OmMzZmQ5YjQ1NDU2ZGY1MGY4OGYwNzU5Zg=="}]},[],[]),
+    	Auth = base64:encode_to_string(AppKey + ":" + MasterSecret),
+        io:format("Auth : ~p~n",[Auth]),
+        R = httpc:request(get,{JpushUrl4Cid, [{"Authorization","Basic " ++ Auth}]},[],[]),
         {ok, {{RespondVersion,RespondCode, RespondState}, RespondHead, RespondBody}} = R,
         io:format("RespondVersion : ~p~n",[RespondVersion]),
         io:format("RespondCode : ~p~n",[RespondCode]),
@@ -89,33 +92,19 @@ send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} 
         CidTail = string:find(RespondBody,"[\"",trailing),
         io:format("Cid : ~p~n",[CidTail]),
         Cid = string:find(CidTail,"\"]",leading),
-        io:format("Cid : ~p~n",[Cid]),
-        Acc;
-      true ->
-        Acc
-    end.
-
-
--spec fire_push({any(), message()}) -> {any(), message()}.
-fire_push({_Action, #message{type = Type, body = Body, to = To, from = From}} = Acc) ->
-    AppKey = gen_mod:get_module_opt(To#jid.lserver, ?MODULE, app_key, fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
-    MasterSecret = gen_mod:get_module_opt(To#jid.lserver, ?MODULE, master_secret, fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
-    JpushUrl = gen_mod:get_module_opt(To#jid.lserver, ?MODULE, jpush_url, fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
-    ?INFO_MSG("jpush config: appKey:~s, masterSecret:~s", [AppKey, MasterSecret]),
-	Lastone = lists:last(Body),
-	BodyContent = Lastone#text.data,
-	io:format("BodyContent ~p~n",[BodyContent]),
-	BodyContentStr = binary_to_list(BodyContent),
-	io:format("BodyContentStr : ~p~n",[BodyContentStr]),
-    if (Type == chat) and (Body /= <<"">>) ->
-		Sep = "&",
+        io:format("From : ~p~n",[From]),
+        io:format("To : ~p~n",[To]),
+        io:format("RespondBody : ~p~n",[RespondBody]),
+        Sep = "&",
         Post = [
-          "{ \"cid\": \"8103a4c62890b98974ec1949-711161d4-5f17-4d2f-a855-5e5a8909b26e\", \"platform\": \"all\", \"audience\": \"all\", \"notification\": {\"android\": {\"alert\": \"Hi, JPush!\",\"title\": \"Send to Android\",\"builder_id\": 1},\"ios\": {\"alert\": \"Hi, JPush!\",\"sound\": \"default\",\"badge\": \"+1\", \"options\": {\"time_to_live\": 60,\"apns_production\": false,\"apns_collapse_id\":\"jiguang_test_201711011100\" }}"],
+          "{ \"cid\": \"" ++ Cid ++ "\", \"platform\": \"ios\", \"audience\": \"all\", \"notification\": {\"android\": {\"alert\": \"Hi, JPush!\",\"title\": \"Send to Android\",\"builder_id\": 1},\"ios\": {\"alert\": \"Hi, JPush!\",\"sound\": \"default\",\"badge\": \"+1\", \"options\": {\"time_to_live\": 60,\"apns_production\": false,\"apns_collapse_id\":\"jiguang_test_201711011100\" }}"],
         ?INFO_MSG("Sending post:~s", [ Post]),
         httpc:request(post, 
-        	{binary_to_list(JpushUrl), [], "application/json", list_to_binary(Post)},
-        	[{proxy_auth,{binary_to_list(AppKey),binary_to_list(MasterSecret) }}],
-        	[{sync, true},{receiver, []}]),
+        	{binary_to_list(JpushUrl), [{"Authorization","Basic " ++ Auth}],
+        	 "application/json",
+        	list_to_binary(Post)},
+        	[],
+        	[{sync, true}]),
         Acc;
       true ->
         Acc
