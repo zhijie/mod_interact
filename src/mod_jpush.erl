@@ -87,7 +87,7 @@ send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} 
         io:format("RespondHead : ~p~n",[RespondHead]),
         io:format("RespondBody : ~p~n",[RespondBody]),
         IndexStart = string:chr(RespondBody,'['),
-        Cid = string:substr(RespondBody,IndexStart + 2, 61),
+        Cid = string:lexemes(RespondBody,"\""),
         io:format("Cid : ~p~n",[Cid]),
         Acc;
       true ->
