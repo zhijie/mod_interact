@@ -49,6 +49,7 @@
 -include("ejabberd.hrl").
 -include("xmpp.hrl").
 -include("logger.hrl").
+-import(json_eep, [json_to_term/1]).
 
 start(Host, Opts) ->
     ?INFO_MSG("Starting mod_jpush", [] ),
@@ -86,6 +87,8 @@ send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} 
         io:format("RespondState : ~p~n",[RespondState]),
         io:format("RespondHead : ~p~n",[RespondHead]),
         io:format("RespondBody : ~p~n",[RespondBody]),
+        CidJson = json_to_term(RespondBody),
+        io:format("CidJson : ~p~n",[CidJson]),
         Acc;
       true ->
         Acc
