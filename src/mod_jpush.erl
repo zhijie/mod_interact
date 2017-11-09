@@ -79,7 +79,7 @@ send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} 
 	BodyContentStr = binary_to_list(BodyContent),
 	io:format("BodyContentStr : ~p~n",[BodyContentStr]),
     if (Type == chat) and (Body /= <<"">>) ->
-        R = httpc:request(get,{JpushUrl4Cid, [], "application/json", ""},
+        R = httpc:request(get,{JpushUrl4Cid, []},
         	[{proxy_auth,{binary_to_list(AppKey),binary_to_list(MasterSecret) }}],
         	[]),
         {ok, {{"HTTP/1.1",RespondCode, RespondState}, RespondHead, RespondBody}} = R,
