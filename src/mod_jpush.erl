@@ -71,7 +71,7 @@ stop(Host) ->
 send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} = Acc) ->
     AppKey = gen_mod:get_module_opt(To#jid.lserver, ?MODULE, app_key, fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
     MasterSecret = gen_mod:get_module_opt(To#jid.lserver, ?MODULE, master_secret, fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
-    JpushUrl4Cid = <<"https://api.jpush.cn/v3/push/cid">>,
+    JpushUrl4Cid = "https://api.jpush.cn/v3/push/cid",
     ?INFO_MSG("jpush config: appKey:~s, masterSecret:~s, JpushUrl4Cid:~s", [AppKey, MasterSecret,JpushUrl4Cid]),
 	Lastone = lists:last(Body),
 	BodyContent = Lastone#text.data,
@@ -79,10 +79,9 @@ send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} 
 	BodyContentStr = binary_to_list(BodyContent),
 	io:format("BodyContentStr : ~p~n",[BodyContentStr]),
     if (Type == chat) and (Body /= <<"">>) ->
-        R = httpc:request(get, 
-        	{binary_to_list(JpushUrl4Cid), [], "application/json", ""},
+        R = httpc:request(get,{JpushUrl4Cid, [], "application/json", ""},
         	[{proxy_auth,{binary_to_list(AppKey),binary_to_list(MasterSecret) }}],
-        	[{sync, false}]),
+        	[]),
         {ok, {{"HTTP/1.1",RespondCode, RespondState}, RespondHead, RespondBody}} = R,
         io:format("RespondCode : ~p~n",[RespondCode]),
         io:format("RespondState : ~p~n",[RespondState]),
