@@ -98,14 +98,20 @@ send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} 
         io:format("From : ~p~n",[From]),
         io:format("To : ~p~n",[To]),
         Post = [
-          "{ \"cid\": \"" ++ Cid ++ "\", \"platform\": \"ios\", \"audience\": \"all\", \"notification\": {\"android\": {\"alert\": \"Hi, JPush!\",\"title\": \"Send to Android\",\"builder_id\": 1},\"ios\": {\"alert\": \"Hi, JPush!\",\"sound\": \"default\",\"badge\": \"+1\", \"options\": {\"time_to_live\": 60,\"apns_production\": false,\"apns_collapse_id\":\"jiguang_test_201711011100\" }}"],
+          "{ \"cid\": \"" ++ Cid ++ "\", \"platform\": \"ios\", \"audience\": \"all\", \"notification\": {\"android\": {\"alert\": \"test!\",\"title\": \"Send to Android\",\"builder_id\": 1},\"ios\": {\"alert\": \"test!\",\"sound\": \"default\",\"badge\": \"+1\", \"options\": {\"time_to_live\": 60,\"apns_production\": false,\"apns_collapse_id\":\"jiguang_test_201711011100\" }}"],
         ?INFO_MSG("Sending post:~s", [ Post]),
-        httpc:request(post, 
+        RP = httpc:request(post, 
         	{JpushUrl, [{"Authorization","Basic " ++ Auth}],
         	 "application/json",
         	list_to_binary(Post)},
         	[],
         	[{sync, true}]),
+        {ok, {{PostRespondVersion,PostRespondCode, PostRespondState}, PostRespondHead, PostRespondBody}} = RP,
+        io:format("PostRespondVersion : ~p~n",[PostRespondVersion]),
+        io:format("PostRespondCode : ~p~n",[PostRespondCode]),
+        io:format("PostRespondState : ~p~n",[PostRespondState]),
+        io:format("PostRespondHead : ~p~n",[PostRespondHead]),
+        io:format("PostRespondBody : ~p~n",[PostRespondBody]),
         Acc;
       true ->
         Acc
