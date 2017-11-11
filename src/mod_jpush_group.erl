@@ -41,7 +41,7 @@
 -export([start/2,
 	 init/2,
 	 stop/1,
-	 send_notice/1]).
+	 user_send_packet/1]).
 
 -define(PROCNAME, ?MODULE).
 
