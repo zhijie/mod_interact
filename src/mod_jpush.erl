@@ -100,7 +100,7 @@ send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} 
         Message2Send = binary_to_list(From#jid.user) ++ ":" ++ BodyContentStr,
         io:format("Message2Send : ~p~n",[Message2Send]),
         %%%Audience = "{\"audience\" : {\"alias\" : [ \" ++ binary_to_list(To#jid.user) ++ \"]}}",
-        Audience = "\"all"",
+        Audience = "\"all\"",
         io:format("Audience : ~p~n",[Audience]),
         Post = [
           "{ \"cid\": \"", Cid , "\", \"platform\": \"ios\", \"audience\": " , 
