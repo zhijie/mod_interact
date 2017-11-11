@@ -72,7 +72,7 @@ send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} 
     ?INFO_MSG("jpush debuging ----------------------------------------------", []),
     io:format("From : ~p~n",[From]),
     io:format("To : ~p~n",[To]),
-    io:format("Body : ~p~n",[Body]),
+    io:format("Acc : ~p~n",[Acc]),
     AppKey = gen_mod:get_module_opt(To#jid.lserver, ?MODULE, app_key, fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
     MasterSecret = gen_mod:get_module_opt(To#jid.lserver, ?MODULE, master_secret, fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
     JpushUrl4Cid = "https://api.jpush.cn/v3/push/cid",
