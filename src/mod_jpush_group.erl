@@ -27,13 +27,13 @@
 
 %%%----------------------------------------------------------------------
 %%% configuration： ejabberd.yml
-%%% mod_jpush:
+%%% mod_jpush_group:
 %%% 		app_key: "xxx"
 %%% 		master_secret: "xxx"
 %%% note: tested in ejabberd 17.07
 %%%----------------------------------------------------------------------
 
--module(mod_jpush).
+-module(mod_jpush_group).
 -author('onezeros.lee@gmail.com').
 
 -behaviour(gen_mod).
@@ -51,25 +51,25 @@
 
 
 start(Host, Opts) ->
-    ?INFO_MSG("Starting mod_jpush", [] ),
+    ?INFO_MSG("Starting mod_jpush_group", [] ),
     register(?PROCNAME,spawn(?MODULE, init, [Host, Opts])),  
     ok.
 
 init(Host, _Opts) ->
     inets:start(),
     ssl:start(),
-    ejabberd_hooks:add(offline_message_hook, Host, ?MODULE, send_notice, 10),
+    ejabberd_hooks:add(user_send_packet, Host, ?MODULE, send_notice, 10),
     ok.
 
 stop(Host) ->
     ?INFO_MSG("Stopping mod_jpush", [] ),
-    ejabberd_hooks:delete(offline_message_hook, Host,
+    ejabberd_hooks:delete(user_send_packet, Host,
 			  ?MODULE, send_notice, 10),
     ok.
 
 -spec send_notice({any(), message()}) -> {any(), message()}.
 send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} = Acc) ->
-    ?INFO_MSG("jpush debuging ----------------------------------------------", []),
+    ?INFO_MSG("jpush_group debuging ----------------------------------------------", []),
     io:format("From : ~p~n",[From]),
     io:format("To : ~p~n",[To]),
     io:format("Acc : ~p~n",[Acc]),
@@ -78,7 +78,7 @@ send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} 
     JpushUrl4Cid = "https://api.jpush.cn/v3/push/cid",
     JpushUrl = "https://api.jpush.cn/v3/push",
     ?INFO_MSG("jpush config: appKey:~s, masterSecret:~s, JpushUrl4Cid:~s", [AppKey, MasterSecret,JpushUrl4Cid]),
-    if (Type == chat) and (Body /= <<"">>) ->
+    if (Type == groupchat) and (Body /= <<"">>) ->
 		Lastone = lists:last(Body),
 		BodyContent = Lastone#text.data,
 		io:format("BodyContent ~p~n",[BodyContent]),
