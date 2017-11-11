@@ -127,9 +127,11 @@ user_send_packet({Packet, C2SState}) ->
 			io:format("PostRespondCode : ~p~n",[PostRespondCode]),
 			io:format("PostRespondState : ~p~n",[PostRespondState]),
 			io:format("PostRespondHead : ~p~n",[PostRespondHead]),
-			io:format("PostRespondBody : ~p~n",[PostRespondBody]);
+			io:format("PostRespondBody : ~p~n",[PostRespondBody]),
+		    {Packet, C2SState};
+	    true -> {Packet, C2SState}
+      true -> {Packet, C2SState}
     end.
-    {Packet, C2SState}.
     
 -spec send_notice({any(), message()}) -> {any(), message()}.
 send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} = Acc) ->
