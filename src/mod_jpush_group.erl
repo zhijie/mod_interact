@@ -129,7 +129,8 @@ user_send_packet({Packet, C2SState}) ->
 			io:format("PostRespondHead : ~p~n",[PostRespondHead]),
 			io:format("PostRespondBody : ~p~n",[PostRespondBody]),
 		    {Packet, C2SState};
-	    true -> {Packet, C2SState}
+	      true -> {Packet, C2SState}
+	    end.
       true -> {Packet, C2SState}
     end.
     
