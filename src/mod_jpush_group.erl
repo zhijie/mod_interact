@@ -80,6 +80,8 @@ user_send_packet({Packet, C2SState}) ->
     io:format("Packet : ~p~n",[Packet]),
     io:format("C2SState : ~p~n",[C2SState]),
     if (Type == groupchat) ->
+    	Message = xmpp:decode(Packet),
+    	io:format("Message : ~p~n",[Message]),
     	{Packet, C2SState};
       true ->
     	{Packet, C2SState}
