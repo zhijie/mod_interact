@@ -31,6 +31,7 @@
 %%% 		app_key: "xxx"
 %%% 		master_secret: "xxx"
 %%% note: tested in ejabberd 17.07
+%%% use: when a chat message send to a offline user, push jpush notification to this offline user.
 %%%----------------------------------------------------------------------
 
 -module(mod_jpush).

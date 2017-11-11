@@ -1,6 +1,6 @@
 %%%----------------------------------------------------------------------
 
-%%% File    : mod_jpush.erl
+%%% File    : mod_jpush_group.erl
 %%% Author  : onezeros <onezeros.lee@gmail.com>
 %%% Purpose : Forward offline messages by jpush push notification  
 %%% Created : 08 Nov 2017 by onezeros <onezeros.lee@gmail.com>
@@ -31,6 +31,7 @@
 %%% 		app_key: "xxx"
 %%% 		master_secret: "xxx"
 %%% note: tested in ejabberd 17.07
+%%% use: when a group receives message, push jpush notification to all members of this group. users in this group must be taged with name of this group.
 %%%----------------------------------------------------------------------
 
 -module(mod_jpush_group).
@@ -112,7 +113,7 @@ user_send_packet({Packet, C2SState}) ->
 			io:format("Cid : ~p~n",[Cid]),
 			Message2Send = binary_to_list(From#jid.user) ++ ":" ++ BodyContentStr,
 			io:format("Message2Send : ~p~n",[Message2Send]),
-			%%%Audience = "{\"audience\" : {\"alias\" : [ \" ++ binary_to_list(To#jid.user) ++ \"]}}",
+			%%%Audience = "{\"audience\" : {\"tag\" : [ \" ++ binary_to_list(To#jid.user) ++ \"]}}", 
 			Audience = "\"all\"",
 			io:format("Audience : ~p~n",[Audience]),
 			Post = [
