@@ -85,6 +85,11 @@ user_send_packet({Packet, C2SState}) ->
     	Body = Message#message.body,
     	io:format("Body : ~p~n",[Body]),
     	if (Body /= <<"">>) ->
+			AppKey = gen_mod:get_module_opt(To#jid.lserver, ?MODULE, app_key, fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
+			MasterSecret = gen_mod:get_module_opt(To#jid.lserver, ?MODULE, master_secret, fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
+			JpushUrl4Cid = "https://api.jpush.cn/v3/push/cid",
+			JpushUrl = "https://api.jpush.cn/v3/push",
+			?INFO_MSG("jpush config: appKey:~s, masterSecret:~s, JpushUrl4Cid:~s", [AppKey, MasterSecret,JpushUrl4Cid]),
 			Lastone = lists:last(Body),
 			BodyContent = Lastone#text.data,
 			io:format("BodyContent ~p~n",[BodyContent]),
