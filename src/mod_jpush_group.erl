@@ -72,12 +72,19 @@ stop(Host) ->
 user_send_packet({Packet, C2SState}) ->
     From = xmpp:get_from(Packet),
     To = xmpp:get_to(Packet),
+    Type = xmpp:get_type(Packet),
     ?INFO_MSG("jpush_group debuging ----------------------------------------------", []),
     io:format("From : ~p~n",[From]),
     io:format("To : ~p~n",[To]),
+    io:format("Type : ~p~n",[Type]),
     io:format("Packet : ~p~n",[Packet]),
     io:format("C2SState : ~p~n",[C2SState]),
-	ACC.
+    if (Type == groupchat) ->
+    	{Packet, C2SState};
+      true ->
+    	{Packet, C2SState}
+    end.
+    
     
 -spec send_notice({any(), message()}) -> {any(), message()}.
 send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} = Acc) ->
