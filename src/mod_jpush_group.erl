@@ -77,8 +77,7 @@ user_send_packet({Packet, C2SState}) ->
     io:format("To : ~p~n",[To]),
     io:format("Packet : ~p~n",[Packet]),
     io:format("C2SState : ~p~n",[C2SState]),
-	ACC,
-    end.
+	ACC.
     
 -spec send_notice({any(), message()}) -> {any(), message()}.
 send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} = Acc) ->
