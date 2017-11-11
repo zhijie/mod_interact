@@ -69,6 +69,10 @@ stop(Host) ->
 
 -spec send_notice({any(), message()}) -> {any(), message()}.
 send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} = Acc) ->
+    ?INFO_MSG("jpush debuging ----------------------------------------------", []),
+    io:format("From : ~p~n",[From]),
+    io:format("To : ~p~n",[To]),
+    io:format("Body : ~p~n",[Body]),
     AppKey = gen_mod:get_module_opt(To#jid.lserver, ?MODULE, app_key, fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
     MasterSecret = gen_mod:get_module_opt(To#jid.lserver, ?MODULE, master_secret, fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
     JpushUrl4Cid = "https://api.jpush.cn/v3/push/cid",
@@ -95,8 +99,6 @@ send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} 
         io:format("CidTail : ~p~n",[CidTail]),
         Cid = string:slice(CidTail,2,61),
         io:format("Cid : ~p~n",[Cid]),
-        io:format("From : ~p~n",[From]),
-        io:format("To : ~p~n",[To]),
         Message2Send = binary_to_list(From#jid.user) ++ ":" ++ BodyContentStr,
         io:format("Message2Send : ~p~n",[Message2Send]),
         %%%Audience = "{\"audience\" : {\"alias\" : [ \" ++ binary_to_list(To#jid.user) ++ \"]}}",
