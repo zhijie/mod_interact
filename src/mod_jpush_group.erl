@@ -82,11 +82,54 @@ user_send_packet({Packet, C2SState}) ->
     if (Type == groupchat) ->
     	Message = xmpp:decode(Packet),
     	io:format("Message : ~p~n",[Message]),
-    	{Packet, C2SState};
-      true ->
-    	{Packet, C2SState}
+    	Body = Message#message.body,
+    	io:format("Body : ~p~n",[Body]),
+    	if (Body /= <<"">>) ->
+			Lastone = lists:last(Body),
+			BodyContent = Lastone#text.data,
+			io:format("BodyContent ~p~n",[BodyContent]),
+			BodyContentStr = binary_to_list(BodyContent),
+			io:format("BodyContentStr : ~p~n",[BodyContentStr]),
+			AuthOrg = binary_to_list(AppKey) ++ ":" ++ binary_to_list(MasterSecret),
+			io:format("Auth : ~p~n",[AuthOrg]),
+			Auth = base64:encode_to_string(AuthOrg),
+			io:format("Auth : ~p~n",[Auth]),
+			R = httpc:request(get,{JpushUrl4Cid, [{"Authorization","Basic " ++ Auth}]},[],[]),
+			{ok, {{RespondVersion,RespondCode, RespondState}, RespondHead, RespondBody}} = R,
+			io:format("RespondVersion : ~p~n",[RespondVersion]),
+			io:format("RespondCode : ~p~n",[RespondCode]),
+			io:format("RespondState : ~p~n",[RespondState]),
+			io:format("RespondHead : ~p~n",[RespondHead]),
+			io:format("RespondBody : ~p~n",[RespondBody]),
+			CidTail = string:find(RespondBody,"[\"",trailing),		
+			io:format("CidTail : ~p~n",[CidTail]),
+			Cid = string:slice(CidTail,2,61),
+			io:format("Cid : ~p~n",[Cid]),
+			Message2Send = binary_to_list(From#jid.user) ++ ":" ++ BodyContentStr,
+			io:format("Message2Send : ~p~n",[Message2Send]),
+			%%%Audience = "{\"audience\" : {\"alias\" : [ \" ++ binary_to_list(To#jid.user) ++ \"]}}",
+			Audience = "\"all\"",
+			io:format("Audience : ~p~n",[Audience]),
+			Post = [
+			  "{ \"cid\": \"", Cid , "\", \"platform\": \"ios\", \"audience\": " , 
+			  Audience ,", \"notification\": {\"android\": {\"alert\": \"" , 
+			  Message2Send , "\",\"title\": \"you have a new message\",\"builder_id\": 1},\"ios\": {\"alert\": \"" , 
+			  Message2Send ,"\",\"sound\": \"default\",\"badge\": \"+1\"}}, \"options\": {\"time_to_live\": 60,\"apns_production\": false}}"],
+			?INFO_MSG("Sending post:~s", [ Post]),
+			RP = httpc:request(post, 
+				{JpushUrl, [{"Authorization","Basic " ++ Auth}],
+				 "application/json",
+				list_to_binary(Post)},
+				[],
+				[{sync, true}]),
+			{ok, {{PostRespondVersion,PostRespondCode, PostRespondState}, PostRespondHead, PostRespondBody}} = RP,
+			io:format("PostRespondVersion : ~p~n",[PostRespondVersion]),
+			io:format("PostRespondCode : ~p~n",[PostRespondCode]),
+			io:format("PostRespondState : ~p~n",[PostRespondState]),
+			io:format("PostRespondHead : ~p~n",[PostRespondHead]),
+			io:format("PostRespondBody : ~p~n",[PostRespondBody]);
     end.
-    
+    {Packet, C2SState}.
     
 -spec send_notice({any(), message()}) -> {any(), message()}.
 send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} = Acc) ->
