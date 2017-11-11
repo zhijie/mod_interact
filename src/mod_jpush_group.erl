@@ -58,15 +58,28 @@ start(Host, Opts) ->
 init(Host, _Opts) ->
     inets:start(),
     ssl:start(),
-    ejabberd_hooks:add(user_send_packet, Host, ?MODULE, send_notice, 10),
+    ejabberd_hooks:add(user_send_packet, Host, ?MODULE, user_send_packet, 10),
     ok.
 
 stop(Host) ->
     ?INFO_MSG("Stopping mod_jpush", [] ),
     ejabberd_hooks:delete(user_send_packet, Host,
-			  ?MODULE, send_notice, 10),
+			  ?MODULE, user_send_packet, 10),
     ok.
 
+-spec user_send_packet({stanza(), ejabberd_c2s:state()})
+      -> {stanza(), ejabberd_c2s:state()} | {stop, {stanza(), ejabberd_c2s:state()}}.
+user_send_packet({Packet, C2SState}) ->
+    From = xmpp:get_from(Packet),
+    To = xmpp:get_to(Packet),
+    ?INFO_MSG("jpush_group debuging ----------------------------------------------", []),
+    io:format("From : ~p~n",[From]),
+    io:format("To : ~p~n",[To]),
+    io:format("Packet : ~p~n",[Packet]),
+    io:format("C2SState : ~p~n",[C2SState]),
+	ACC,
+    end.
+    
 -spec send_notice({any(), message()}) -> {any(), message()}.
 send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} = Acc) ->
     ?INFO_MSG("jpush_group debuging ----------------------------------------------", []),
