@@ -70,17 +70,17 @@ stop(Host) ->
 -spec user_send_packet({stanza(), ejabberd_c2s:state()})
       -> {stanza(), ejabberd_c2s:state()} | {stop, {stanza(), ejabberd_c2s:state()}}.
 user_send_packet({Packet, C2SState}) ->
-    From = xmpp:get_from(Packet),
-    To = xmpp:get_to(Packet),
-    Type = xmpp:get_type(Packet),
     ?INFO_MSG("jpush_group debuging ----------------------------------------------", []),
-    io:format("From : ~p~n",[From]),
-    io:format("To : ~p~n",[To]),
-    io:format("Type : ~p~n",[Type]),
     io:format("Packet : ~p~n",[Packet]),
     io:format("C2SState : ~p~n",[C2SState]),
+    Type = xmpp:get_type(Packet),
+    io:format("Type : ~p~n",[Type]),
     if (Type == groupchat) ->
     	Message = xmpp:decode(Packet),
+		From = Message#message.from,
+		To = Message#message.to,
+		io:format("From : ~p~n",[From]),
+		io:format("To : ~p~n",[To]),
     	io:format("Message : ~p~n",[Message]),
     	Body = Message#message.body,
     	io:format("Body : ~p~n",[Body]),
