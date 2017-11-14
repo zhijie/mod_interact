@@ -145,10 +145,18 @@ send_notice({_Action, Message} = Acc) ->
         io:format("Item : ~p~n",[Item]),
 		{_, _, _, Xmlels, _, _} = Item,
         io:format("Xmlels : ~p~n",[Xmlels]),
-		[Xmlel, _] = Xmlels,
+		[Xmlel] = Xmlels,
         io:format("Xmlel : ~p~n",[Xmlel]),
-		[_,_, _, MessageList] = Xmlel,
+		{_,_, _, MessageList} = Xmlel,
         io:format("MessageList : ~p~n",[MessageList]),
+		[_,_, BodyXml] = MessageList,
+        io:format("BodyXml : ~p~n",[BodyXml]),
+		{_,_, _, BodyTexts} = BodyXml,
+        io:format("BodyTexts : ~p~n",[BodyTexts]),
+		[BodyText] = BodyTexts,
+        io:format("BodyText : ~p~n",[BodyText]),
+		{_, Text} = BodyText,
+        io:format("Text : ~p~n",[Text]),
       	Acc;
       true ->
         Acc
