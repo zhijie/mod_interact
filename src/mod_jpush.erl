@@ -81,6 +81,8 @@ send_notice({_Action, Message} = Acc) ->
     JpushUrl4Cid = "https://api.jpush.cn/v3/push/cid",
     JpushUrl = "https://api.jpush.cn/v3/push",
     ?INFO_MSG("jpush config: appKey:~s, masterSecret:~s, JpushUrl4Cid:~s", [AppKey, MasterSecret,JpushUrl4Cid]),
+    ServerPrefix = string:prefix(From#jid.server,"conference"),
+    io:format("ServerPrefix : ~p~n",[ServerPrefix]),
     if (Type == chat) and (Body /= <<"">>) ->
 		Lastone = lists:last(Body),
 		BodyContent = Lastone#text.data,
@@ -126,7 +128,7 @@ send_notice({_Action, Message} = Acc) ->
         io:format("PostRespondHead : ~p~n",[PostRespondHead]),
         io:format("PostRespondBody : ~p~n",[PostRespondBody]),
         Acc;
-      (Type == normal) and ( string:prefix(From#jid.server,"conference") /= nomatch) ->
+      (Type == normal) and (ServerPrefix /= nomatch) ->
       	Els = xmpp:sub_els(Message),
         io:format("Els : ~p~n",[Els]),
       	Acc;
