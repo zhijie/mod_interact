@@ -49,6 +49,7 @@
 -include("ejabberd.hrl").
 -include("xmpp.hrl").
 -include("logger.hrl").
+-include("fxml.hrl").
 
 
 start(Host, Opts) ->
