@@ -69,8 +69,9 @@ stop(Host) ->
     ok.
 
 -spec send_notice({any(), message()}) -> {any(), message()}.
-send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} = Acc) ->
+send_notice({_Action, Message} = Acc) ->
     ?INFO_MSG("jpush debuging ----------------------------------------------", []),
+    #message{type = Type, body = Body, to = To, from = From} = Message,
     io:format("From : ~p~n",[From]),
     io:format("To : ~p~n",[To]),
     io:format("Type : ~p~n",[Type]),
@@ -125,6 +126,10 @@ send_notice({_Action, #message{type = Type, body = Body, to = To, from = From}} 
         io:format("PostRespondHead : ~p~n",[PostRespondHead]),
         io:format("PostRespondBody : ~p~n",[PostRespondBody]),
         Acc;
+      (Type == normal) and ( string::prefix(From#jid.server,"conference") /= nomatch) ->
+      	Els = xmpp:sub_els(Message),
+        io:format("Els : ~p~n",[Els]),
+      	Acc;
       true ->
         Acc
     end.
