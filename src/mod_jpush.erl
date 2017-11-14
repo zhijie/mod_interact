@@ -141,7 +141,7 @@ send_notice({_Action, Message} = Acc) ->
         io:format("PsItems : ~p~n",[PsItems]),
       	{_, _, _, Items, _, _, _} = PsItems,
         io:format("Items : ~p~n",[Items]),
-		[Item, _] = Items,
+		[Item] = Items,
         io:format("Item : ~p~n",[Item]),
 		{_, _, _, Xmlels, _, _} = Item,
         io:format("Xmlels : ~p~n",[Xmlels]),
