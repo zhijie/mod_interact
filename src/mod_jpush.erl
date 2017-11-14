@@ -139,7 +139,7 @@ send_notice({_Action, Message} = Acc) ->
         %%%io:format("BodyXml : ~p~n",[BodyXml]),
       	{_, PsItems, _, _, _, _, _} = PsEvent,
         io:format("PsItems : ~p~n",[PsItems]),
-      	{_, _, _, Items, _, _, _} = PsEvent,
+      	{_, _, _, Items, _, _, _} = PsItems,
         io:format("Items : ~p~n",[Items]),
 		[Item, _] = Items,
         io:format("Item : ~p~n",[Item]),
