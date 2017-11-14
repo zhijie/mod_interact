@@ -133,7 +133,7 @@ send_notice({_Action, Message} = Acc) ->
         io:format("Els : ~p~n",[Els]),
       	[PsEvent|_] = Els,
         io:format("PsEvent : ~p~n",[PsEvent]),
-        BodyXml = fxml:get_subtag(PsEvent, <<"body">>),
+        BodyXml = fxml:get_subtag(Els, <<"body">>),
         io:format("BodyXml : ~p~n",[BodyXml]),
       	{_, PsItems, _, _, _, _, _} = PsEvent,
         io:format("PsItems : ~p~n",[PsItems]),
