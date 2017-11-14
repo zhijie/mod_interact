@@ -131,7 +131,7 @@ send_notice({_Action, Message} = Acc) ->
       (Type == normal) and (ServerPrefix /= nomatch) ->
       	Els = xmpp:get_els(Message),
       	[PsEvent|_] = Els,
-      	{_, PsItems} = PsEvent,
+      	{PreItems, PsItems} = PsEvent,
         io:format("PsItems : ~p~n",[PsItems]),
       	Acc;
       true ->
