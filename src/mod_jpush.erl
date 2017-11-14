@@ -129,7 +129,7 @@ send_notice({_Action, Message} = Acc) ->
         io:format("PostRespondBody : ~p~n",[PostRespondBody]),
         Acc;
       (Type == normal) and (ServerPrefix /= nomatch) ->
-      	Els = xmpp:sub_els(Message),
+      	Els = xmpp:get_els(Message),
         io:format("Els : ~p~n",[Els]),
       	Acc;
       true ->
