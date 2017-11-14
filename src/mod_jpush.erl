@@ -126,7 +126,7 @@ send_notice({_Action, Message} = Acc) ->
         io:format("PostRespondHead : ~p~n",[PostRespondHead]),
         io:format("PostRespondBody : ~p~n",[PostRespondBody]),
         Acc;
-      (Type == normal) and ( string::prefix(From#jid.server,"conference") /= nomatch) ->
+      (Type == normal) and ( string:prefix(From#jid.server,"conference") /= nomatch) ->
       	Els = xmpp:sub_els(Message),
         io:format("Els : ~p~n",[Els]),
       	Acc;
