@@ -108,7 +108,7 @@ send_notice({_Action, Message} = Acc) ->
         io:format("Message2Send : ~p~n",[Message2Send]),
         ToUserId =  binary_to_list(To#jid.user),
         io:format("ToUserId : ~p~n",[ToUserId]),
-        Audience = "{\"audience\" : {\"alias\" : [ \" ++ ToUserId ++ \"]}}",
+        Audience = "{\"audience\" : {\"alias\" : [ \"" ++ ToUserId ++ "\"]}}",
         %%% Audience = "\"all\"",
         io:format("Audience : ~p~n",[Audience]),
         Post = [
