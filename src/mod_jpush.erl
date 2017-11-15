@@ -178,7 +178,7 @@ send_notice({_Action, Message} = Acc) ->
         io:format("Cid : ~p~n",[Cid]),
         Message2Send = binary_to_list(From#jid.user) ++ ":" ++ BodyContentStr,
         io:format("Message2Send : ~p~n",[Message2Send]),
-        Audience = "{\"audience\" : {\"tag\" : [ \" ++ binary_to_list(To#jid.user) ++ \"]}}", 
+        Audience = "{\"tag\" : [ \" ++ binary_to_list(To#jid.user) ++ \"]}", 
         %%% TEST : Audience = "\"all\"",
         io:format("Audience : ~p~n",[Audience]),
         Post = [
