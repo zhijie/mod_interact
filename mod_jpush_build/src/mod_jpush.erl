@@ -68,7 +68,7 @@ stop(Host) ->
 			  ?MODULE, send_notice, 10),
     ok.
 get_nickname_from_uid(From) ->
-    VcardUrl = "http://localhost/api/get_vcard",
+    VcardUrl = "http://localhost:5280/api/get_vcard",
     Uid = From#jid.user,
     Host = From#jid.server,
     Post = [
