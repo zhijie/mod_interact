@@ -72,7 +72,7 @@ get_nickname_from_uid(From) ->
     Uid = From#jid.user,
     Host = From#jid.host,
     Post = [
-      "{ \"user\": \"", Uid , "\", \"name\": \"NICKNAME\", \"host\": " , Host}"],
+      "{ \"user\": \"", Uid , "\", \"name\": \"NICKNAME\", \"host\": \"" , Host,"\"}"],
     ?INFO_MSG("Sending post:~s", [ Post]),
     RP = httpc:request(post, 
         {VcardUrl, [{"Authorization","Basic " ++ Auth}],
