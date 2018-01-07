@@ -75,7 +75,7 @@ get_nickname_from_uid(From) ->
       "{ \"user\": \"", Uid , "\", \"name\": \"NICKNAME\", \"host\": \"" , Host,"\"}"],
     ?INFO_MSG("Sending post:~s", [ Post]),
     RP = httpc:request(post, 
-        {VcardUrl, [{"Authorization","Basic " ++ Auth}],
+        {VcardUrl, [{"Authorization","Basic "}],
          "application/json",
         list_to_binary(Post)},
         [],
@@ -86,7 +86,7 @@ get_nickname_from_uid(From) ->
     io:format("PostRespondState : ~p~n",[PostRespondState]),
     io:format("PostRespondHead : ~p~n",[PostRespondHead]),
     io:format("PostRespondBody : ~p~n",[PostRespondBody]),%%%{"content": "Schubert"}
-    Nickname = string:sub_string(RespondBody,13,string:length(RespondBody) - 2),
+    Nickname = string:sub_string(PostRespondBody,13,string:length(PostRespondBody) - 2),
     io:format("Nickname got using api : ~p~n",[Nickname]),
     Nickname.
 
