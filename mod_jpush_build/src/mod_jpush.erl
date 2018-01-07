@@ -73,7 +73,7 @@ get_nickname_from_uid(From) ->
     Host = From#jid.server,
     VcardUrl = "http://" ++ binary_to_list(Host) ++ ":5280/api/get_vcard",
     Post = [
-      "{ \"user\": \"", Uid , "\", \"name\": \"nickname\", \"host\": \"" , Host,"\"}"],
+      "{ \"user\": \"", Uid , "\", \"name\": \"NICKNAME\", \"host\": \"" , Host,"\"}"],
     ?INFO_MSG("Sending post:~s", [ Post]),
     ?INFO_MSG("Sending post to Url:~s", [ VcardUrl]),
     RP = httpc:request(post, 
