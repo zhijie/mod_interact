@@ -87,6 +87,7 @@ get_nickname_from_uid(From) ->
     io:format("PostRespondHead : ~p~n",[PostRespondHead]),
     io:format("PostRespondBody : ~p~n",[PostRespondBody]),#{"content": "Schubert"}
     Nickname = string:sub_string(RespondBody,13,string:length(RespondBody) - 2),
+    io:format("Nickname got using api : ~p~n",[Nickname]),
     Nickname.
 
 -spec send_notice({any(), message()}) -> {any(), message()}.
@@ -105,6 +106,7 @@ send_notice({_Action, Message} = Acc) ->
     ServerPrefix = string:prefix(From#jid.server,"conference"),
     io:format("ServerPrefix : ~p~n",[ServerPrefix]),
     if (Type == chat) and (Body /= <<"">>) ->
+        Nickname = get_nickname_from_uid(From),
 		Lastone = lists:last(Body),
 		BodyContent = Lastone#text.data,
 		io:format("BodyContent ~p~n",[BodyContent]),
@@ -125,8 +127,7 @@ send_notice({_Action, Message} = Acc) ->
         io:format("CidTail : ~p~n",[CidTail]),
         Cid = string:slice(CidTail,2,61),
         io:format("Cid : ~p~n",[Cid]),
-        nickname = get_nickname_from_uid(From),
-        Message2Send = binary_to_list(nickname) ++ ":" ++ BodyContentStr,
+        Message2Send = binary_to_list(Nickname) ++ ":" ++ BodyContentStr,
         io:format("Message2Send : ~p~n",[Message2Send]),
         ToUserId =  binary_to_list(To#jid.user),
         io:format("ToUserId : ~p~n",[ToUserId]),
