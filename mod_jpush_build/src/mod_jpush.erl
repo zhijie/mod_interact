@@ -67,6 +67,28 @@ stop(Host) ->
     ejabberd_hooks:delete(offline_message_hook, Host,
 			  ?MODULE, send_notice, 10),
     ok.
+get_nickname_from_uid(From) ->
+    VcardUrl = "http://localhost/api/get_vcard",
+    Uid = From#jid.user,
+    Host = From#jid.host,
+    Post = [
+      "{ \"user\": \"", Uid , "\", \"name\": \"NICKNAME\", \"host\": \"" , Host,"\"}"],
+    ?INFO_MSG("Sending post:~s", [ Post]),
+    RP = httpc:request(post, 
+        {VcardUrl, [{"Authorization","Basic " ++ Auth}],
+         "application/json",
+        list_to_binary(Post)},
+        [],
+        [{sync, true}]),
+    {ok, {{PostRespondVersion,PostRespondCode, PostRespondState}, PostRespondHead, PostRespondBody}} = RP,
+    io:format("PostRespondVersion : ~p~n",[PostRespondVersion]),
+    io:format("PostRespondCode : ~p~n",[PostRespondCode]),
+    io:format("PostRespondState : ~p~n",[PostRespondState]),
+    io:format("PostRespondHead : ~p~n",[PostRespondHead]),
+    io:format("PostRespondBody : ~p~n",[PostRespondBody]),%%%{"content": "Schubert"}
+    Nickname = string:sub_string(RespondBody,13,string:length(RespondBody) - 2),
+    io:format("Nickname got using api : ~p~n",[Nickname]),
+    Nickname.
 
 -spec send_notice({any(), message()}) -> {any(), message()}.
 send_notice({_Action, Message} = Acc) ->
@@ -84,6 +106,7 @@ send_notice({_Action, Message} = Acc) ->
     ServerPrefix = string:prefix(From#jid.server,"conference"),
     io:format("ServerPrefix : ~p~n",[ServerPrefix]),
     if (Type == chat) and (Body /= <<"">>) ->
+        Nickname = get_nickname_from_uid(From),
 		Lastone = lists:last(Body),
 		BodyContent = Lastone#text.data,
 		io:format("BodyContent ~p~n",[BodyContent]),
@@ -104,7 +127,7 @@ send_notice({_Action, Message} = Acc) ->
         io:format("CidTail : ~p~n",[CidTail]),
         Cid = string:slice(CidTail,2,61),
         io:format("Cid : ~p~n",[Cid]),
-        Message2Send = binary_to_list(From#jid.user) ++ ":" ++ BodyContentStr,
+        Message2Send = binary_to_list(Nickname) ++ ":" ++ BodyContentStr,
         io:format("Message2Send : ~p~n",[Message2Send]),
         ToUserId =  binary_to_list(To#jid.user),
         io:format("ToUserId : ~p~n",[ToUserId]),
