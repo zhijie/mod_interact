@@ -70,7 +70,7 @@ stop(Host) ->
 get_nickname_from_uid(From) ->
     VcardUrl = "http://localhost/api/get_vcard",
     Uid = From#jid.user,
-    Host = From#jid.host,
+    Host = From#jid.server,
     Post = [
       "{ \"user\": \"", Uid , "\", \"name\": \"NICKNAME\", \"host\": \"" , Host,"\"}"],
     ?INFO_MSG("Sending post:~s", [ Post]),
