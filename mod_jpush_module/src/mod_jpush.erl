@@ -67,15 +67,17 @@ stop(Host) ->
     ejabberd_hooks:delete(offline_message_hook, Host,
 			  ?MODULE, send_notice, 10),
     ok.
+
 get_nickname_from_uid(From) ->
-    VcardUrl = "http://localhost/api/get_vcard",
     Uid = From#jid.user,
-    Host = From#jid.host,
+    Host = From#jid.server,
+    VcardUrl = "http://" ++ binary_to_list(Host) ++ ":5280/api/get_vcard",
     Post = [
       "{ \"user\": \"", Uid , "\", \"name\": \"NICKNAME\", \"host\": \"" , Host,"\"}"],
     ?INFO_MSG("Sending post:~s", [ Post]),
+    ?INFO_MSG("Sending post to Url:~s", [ VcardUrl]),
     RP = httpc:request(post, 
-        {VcardUrl, [{"Authorization","Basic " ++ Auth}],
+        {VcardUrl, [{"Authorization","Basic "}],
          "application/json",
         list_to_binary(Post)},
         [],
@@ -85,8 +87,8 @@ get_nickname_from_uid(From) ->
     io:format("PostRespondCode : ~p~n",[PostRespondCode]),
     io:format("PostRespondState : ~p~n",[PostRespondState]),
     io:format("PostRespondHead : ~p~n",[PostRespondHead]),
-    io:format("PostRespondBody : ~p~n",[PostRespondBody]),#{"content": "Schubert"}
-    Nickname = string:sub_string(RespondBody,13,string:length(RespondBody) - 2),
+    io:format("PostRespondBody : ~p~n",[PostRespondBody]),%%%{"content": "Schubert"}
+    Nickname = string:sub_string(PostRespondBody,13,string:length(PostRespondBody) - 2),
     io:format("Nickname got using api : ~p~n",[Nickname]),
     Nickname.
 
@@ -127,7 +129,7 @@ send_notice({_Action, Message} = Acc) ->
         io:format("CidTail : ~p~n",[CidTail]),
         Cid = string:slice(CidTail,2,61),
         io:format("Cid : ~p~n",[Cid]),
-        Message2Send = binary_to_list(Nickname) ++ ":" ++ BodyContentStr,
+        Message2Send = Nickname ++ ":" ++ BodyContentStr,
         io:format("Message2Send : ~p~n",[Message2Send]),
         ToUserId =  binary_to_list(To#jid.user),
         io:format("ToUserId : ~p~n",[ToUserId]),
