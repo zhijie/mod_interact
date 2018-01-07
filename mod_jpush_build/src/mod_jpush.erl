@@ -68,12 +68,13 @@ stop(Host) ->
 			  ?MODULE, send_notice, 10),
     ok.
 get_nickname_from_uid(From) ->
-    VcardUrl = "http://localhost:5280/api/get_vcard",
     Uid = From#jid.user,
     Host = From#jid.server,
+    VcardUrl = "http://"++Host++":5280/api/get_vcard",
     Post = [
       "{ \"user\": \"", Uid , "\", \"name\": \"NICKNAME\", \"host\": \"" , Host,"\"}"],
     ?INFO_MSG("Sending post:~s", [ Post]),
+    ?INFO_MSG("Sending post to Url:~s", [ VcardUrl]),
     RP = httpc:request(post, 
         {VcardUrl, [{"Authorization","Basic "}],
          "application/json",
