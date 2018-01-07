@@ -67,12 +67,13 @@ stop(Host) ->
     ejabberd_hooks:delete(offline_message_hook, Host,
 			  ?MODULE, send_notice, 10),
     ok.
+
 get_nickname_from_uid(From) ->
     Uid = From#jid.user,
     Host = From#jid.server,
     VcardUrl = "http://" ++ binary_to_list(Host) ++ ":5280/api/get_vcard",
     Post = [
-      "{ \"user\": \"", Uid , "\", \"name\": \"NICKNAME\", \"host\": \"" , Host,"\"}"],
+      "{ \"user\": \"", Uid , "\", \"name\": \"nickname\", \"host\": \"" , Host,"\"}"],
     ?INFO_MSG("Sending post:~s", [ Post]),
     ?INFO_MSG("Sending post to Url:~s", [ VcardUrl]),
     RP = httpc:request(post, 
@@ -128,7 +129,7 @@ send_notice({_Action, Message} = Acc) ->
         io:format("CidTail : ~p~n",[CidTail]),
         Cid = string:slice(CidTail,2,61),
         io:format("Cid : ~p~n",[Cid]),
-        Message2Send = binary_to_list(Nickname) ++ ":" ++ BodyContentStr,
+        Message2Send = Nickname ++ ":" ++ BodyContentStr,
         io:format("Message2Send : ~p~n",[Message2Send]),
         ToUserId =  binary_to_list(To#jid.user),
         io:format("ToUserId : ~p~n",[ToUserId]),
